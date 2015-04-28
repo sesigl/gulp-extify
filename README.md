@@ -12,7 +12,7 @@ npm install --save-dev gulp-extjs-dependencies
 Then, add it to your `gulpfile.js`:
 
 ```javascript
-var replace = require('gulp-extjs-dependencies');
+var extDependencies = require('gulp-extjs-dependencies');
 
 gulp.task('templates', function(){
   gulp.src(extDependencies('./app/app.js'))
