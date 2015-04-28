@@ -28,6 +28,10 @@
       "url": "https://raw.githubusercontent.com/sebastian2015/gulp-extjs-dependencies/master/LICENSE"
     }
   ],
+  "dependencies": {
+    "gulp": "latest",
+    "through2" : "latest"
+  },
   "devDependencies": {
     "mocha": "latest"
   },

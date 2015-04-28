@@ -1,7 +1,9 @@
-var assert = require("assert"); // node.js core module
+var assert = require("assert");
 var extDependencies = require("../main.js"); // node.js core module
+var gulp = require('gulp');
+
 describe('gulp-extjs-dependencies', function(){
     it("should pipe simple file names", function () {
-        assert.deepEqual(extDependencies('myFile.js'), ['myFile.js']);
+        assert.ok(extDependencies({}));
     });
 });
