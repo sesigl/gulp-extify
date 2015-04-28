@@ -28,9 +28,8 @@
       "url": "https://raw.githubusercontent.com/sebastian2015/gulp-extjs-dependencies/master/LICENSE"
     }
   ],
-  "dependencies": {
-  },
   "devDependencies": {
+    "mocha": "latest"
   },
   "scripts": {
     "test": "mocha -R spec"
