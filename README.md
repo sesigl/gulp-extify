@@ -15,7 +15,8 @@ Then, add it to your `gulpfile.js`:
 var extDependencies = require('gulp-extjs-dependencies');
 
 gulp.task('templates', function(){
-  gulp.src(extDependencies('./app/app.js'))
+  gulp.src(['app/**/*.js'])
+    .pipe(extDependencies())
     .pipe(concat('scripts.js'))
     .pipe(gulp.dest('./build/'))
 });
