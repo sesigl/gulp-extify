@@ -1,4 +1,4 @@
-# gulp-extjs-dependencies [![NPM version][npm-image]][npm-url] [![Build status][travis-image]][travis-url]
+# gulp-extjs-dependencies [![Build Status][travis-image]][travis-url]
 > An extjs-dependency plugin for gulp 3
 
 ## Usage
@@ -43,7 +43,7 @@ Type: `Object`
 
 Coming soon
 
-[travis-url]: Coming soon
-[travis-image]: Coming soon
+[travis-url]: https://travis-ci.org/sebastian2015/gulp-extjs-dependencies
+[travis-image]: https://travis-ci.org/sebastian2015/gulp-extjs-dependencies.svg?branch=master
 [npm-url]: Coming soon
 [npm-image]: Coming soon
