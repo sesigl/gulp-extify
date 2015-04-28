@@ -1,6 +1,6 @@
 {
   "name": "gulp-extjs-dependencies",
-  "version": "0.1",
+  "version": "0.0.1",
   "description": "Detects your extjs app files and returns the in the correct order depending on your requirements.",
   "keywords": [
     "gulpplugin",
@@ -15,12 +15,24 @@
     "email": "akrillo89@gmail.com"
   },
   "main": "index.js",
+  "engines": {
+    "node": ">=0.9.0"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/sebastian2015/gulp-extjs-dependencies.git"
   },
-  "licenses": [{
-    "type": "MIT",
-    "url": "https://raw.githubusercontent.com/sebastian2015/gulp-extjs-dependencies/master/LICENSE"
-  }]
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.githubusercontent.com/sebastian2015/gulp-extjs-dependencies/master/LICENSE"
+    }
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  }
 }
