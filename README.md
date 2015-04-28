@@ -1,4 +1,4 @@
-# gulp-extjs-dependencies [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
+# gulp-extjs-dependencies [![Build Status][travis-image]][travis-url]
 > An extjs-dependency plugin for gulp 3
 
 ## Usage
