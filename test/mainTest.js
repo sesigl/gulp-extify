@@ -98,10 +98,26 @@ describe('gulp-extify', function(){
 
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(5);
-                    resultFiles.indexOf('app"+path.sep+"base"+path.sep+"Root.js').should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js"));
-                    resultFiles.indexOf('app"+path.sep+"mixin"+path.sep+"MyOtherMixin.js').should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js"));
-                    resultFiles.indexOf('app"+path.sep+"mixin"+path.sep+"MyMixin.js').should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js"));
-                    resultFiles.indexOf('app"+path.sep+"controller"+path.sep+"Root.js').should.be.below(resultFiles.indexOf("app"+path.sep+"Application.js"));
+                    resultFiles.indexOf("app"+path.sep+"base"+path.sep+"Root.js").should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js"));
+                    resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"MyOtherMixin.js").should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js"));
+                    resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"MyMixin.js").should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js"));
+                    resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js").should.be.below(resultFiles.indexOf("app"+path.sep+"Application.js"));
+                });
+            });
+        });
+
+        describe("model", function () {
+            it("should handle model defitions of stores like commmon depdendencies", function () {
+                sort([
+                    fixture("app/Application.js"),
+                    fixture("app/controller/Root.js"),
+                    fixture("app/store/MyStore.js"),
+                    fixture("app/model/MyModel.js"),
+                    fixture("app/base/Root.js"),
+
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(5);
+                    resultFiles.indexOf("app"+path.sep+"moddel"+path.sep+"MyModel.js").should.be.below(resultFiles.indexOf("app"+path.sep+"store"+path.sep+"MyStore.js"));
                 });
             });
         });

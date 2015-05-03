@@ -27,15 +27,16 @@ module.exports = function extify () {
         var requirements = fileContents.match(/requires[.|\n|\r]*:[ |\n|\r]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,]*\]/);
         var mixins = fileContents.match(/mixins[.|\n|\r]*:[ |\n|\r]*\{[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|:]*\}/);
         var extend = fileContents.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\.  ]*[\'|\"]/);
+        var model = fileContents.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\.  ]*[\'|\"]/);
 
         //parse classnames
         var currentClass = getClassNames(currentClassWithApostrophes)[0];
         var reqClasses = getClassNames(requirements);
         var extendClasses = getClassNames(extend);
         var mixinClasses = getClassNames(mixins);
+        var modelClass = getClassNames(model);
 
-
-        var dependencyClasses = reqClasses.concat(extendClasses).concat(mixinClasses);
+        var dependencyClasses = reqClasses.concat(extendClasses).concat(mixinClasses).concat(modelClass);
 
         tsort.add(currentClass, dependencyClasses);
         files[currentClass] = file;
