@@ -27,7 +27,7 @@ gulp.task('scripts', function(){
 
 gulp-extify can be used to reorder your gulp.src files.
 
-### extDependencies([, options])
+### extify([, options])
 
 #### options
 Type: `Object`
