@@ -4,6 +4,7 @@ Ext.define('My.Application', {
     requires: [
         'AnotherClass',
         'My.controller.Root',
+        'My.controller.CircDepControllerOne',
         'ExternalClass'
     ],
 

@@ -1,6 +1,6 @@
 {
   "name": "gulp-extify",
-  "version": "0.0.1",
+  "version": "0.1",
   "description": "Reorder your gulp sources depending on your extjs requirements.",
   "keywords": [
     "gulpplugin",
@@ -24,16 +24,16 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://raw.githubusercontent.com/sebarthe/gulp-extify/master/LICENSE"
+      "url": "https://raw.githubusercontent.com/sebarth/gulp-extify/master/LICENSE"
     }
   ],
   "dependencies": {
     "event-stream": "^3.3.0",
+    "gulp-util": "^3.0.4",
     "topo-sort": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^2.3.0",
-    "gulp-util": "^3.0.4",
     "mocha": "latest",
     "path": "^0.11.14"
   },

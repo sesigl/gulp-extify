@@ -2,15 +2,16 @@
 
 var es = require('event-stream');
 var TopoSort = require('topo-sort');
+var gutil = require('gulp-util');
+var PluginError = gutil.PluginError;
 
-var PLUGIN_NAME = 'extify';
+var PLUGIN_NAME = 'gulp-extify';
 
 /**
  * this file just make sure that the test will work
  */
 module.exports = function extify () {
     var files = {};
-    var toSort = [];
     var classAnalytics = [];
     var tsort = new TopoSort();
 
@@ -41,7 +42,11 @@ module.exports = function extify () {
 
     }, function afterFileCollection () {
 
-        var result = tsort.sort().reverse();
+        try {
+            var result = tsort.sort().reverse();
+        } catch(e) {
+            return this.emit('error', new PluginError(PLUGIN_NAME, e.message));
+        }
 
         result.forEach(function (className) {
             if(files[className]) {

@@ -17,13 +17,21 @@ function fixture(file, config) {
     });
 }
 
-function sort(files, checkResults) {
+function sort(files, checkResults, handleError) {
     var resultFiles = [];
 
     var stream = extify();
 
     stream.on('data', function (file) {
         resultFiles.push(file.relative);
+    });
+
+    stream.on('error', function (err) {
+        if (handleError) {
+            handleError(err);
+        } else {
+            should.exist(err);
+        }
     });
 
     stream.on('end', function () {
@@ -95,6 +103,43 @@ describe('gulp-extify', function(){
                     resultFiles.indexOf('app"+path.sep+"mixin"+path.sep+"MyMixin.js').should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js"));
                     resultFiles.indexOf('app"+path.sep+"controller"+path.sep+"Root.js').should.be.below(resultFiles.indexOf("app"+path.sep+"Application.js"));
                 });
+            });
+        });
+    });
+
+    describe("errors", function () {
+        it("should be read with gulp.src", function () {
+            sort([
+                "app/controller/Empty.js",
+            ], function(resultFiles) {
+                resultFiles.length.should.equal(0);
+            }, function(err) {
+                err.message.length.should.be.above(0);
+                err.plugin.should.equal("gulp-extify");
+            });
+        });
+
+        it("should have no circular dependencies", function () {
+            sort([
+                fixture("app/mixin/MyMixin.js"),
+                fixture("app/mixin/MyOtherMixin.js"),
+                fixture("app/Application.js"),
+                fixture("app/controller/Root.js"),
+                fixture("app/base/Root.js"),
+                fixture("app/controller/CircDepControllerOne.js"),
+                fixture("app/controller/CircDepControllerTwo.js")
+            ], function(resultFiles) {
+
+            }, function(err) {
+                err.message.should.equal("At least 1 circular dependency in nodes: " +
+                "\n" +
+                "\n" +
+                "My.controller.CircDepControllerOne\n" +
+                "My.base.Root\n" +
+                "My.controller.CircDepControllerTwo\n" +
+                "\n" +
+                "Graph cannot be sorted!");
+                err.plugin.should.equal("gulp-extify");
             });
         });
     });
