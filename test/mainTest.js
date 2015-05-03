@@ -3,8 +3,7 @@ var chai = require('chai'),
     extify = require("./../"),
     gutil = require('gulp-util'),
     path = require('path'),
-    fs = require('fs'),
-    gulp = require('gulp');
+    fs = require('fs');
 
 function fixture(file, config) {
     var filepath = path.join(__dirname, file);

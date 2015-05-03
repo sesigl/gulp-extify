@@ -6,8 +6,7 @@
     "gulpplugin",
     "gulp-extify",
     "extjs",
-    "dependencies",
-    "preprocessor"
+    "dependencies"
   ],
   "homepage": "https://github.com/sebarth/gulp-extify",
   "author": {
@@ -34,9 +33,6 @@
   },
   "devDependencies": {
     "chai": "^2.3.0",
-    "gulp": "^3.8.11",
-    "gulp-concat": "^2.5.2",
-    "gulp-mocha": "^2.0.1",
     "gulp-util": "^3.0.4",
     "mocha": "latest",
     "path": "^0.11.14"
