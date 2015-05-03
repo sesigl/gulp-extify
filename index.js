@@ -64,11 +64,13 @@ module.exports = function extify () {
             var i = 0;
             stringWithClassNames.forEach(function (req) {
                 var classNames = req.match(/[\'|\"][a-zA-Z0-9\.]+[\'|\"]/g);
-                classNames.forEach(function (c, index) {
-                    if (typeof index === "number") {
-                        allClassNames[i++] = c.substr(1, c.length - 2);
-                    }
-                });
+                if(classNames) {
+                    classNames.forEach(function (c, index) {
+                        if (typeof index === "number") {
+                            allClassNames[i++] = c.substr(1, c.length - 2);
+                        }
+                    });
+                }
             });
         }
 
