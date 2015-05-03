@@ -3,20 +3,20 @@
 
 ## Usage
 
-First, install `gulp-extjs-dependencies` as a development dependency:
+First, install `gulp-extify` as dependency:
 
 ```shell
-npm install --save-dev gulp-extjs-dependencies
+npm install --save gulp-extify
 ```
 
 Then, add it to your `gulpfile.js`:
 
 ```javascript
-var extDependencies = require('gulp-extjs-dependencies');
+var extify = require('gulp-extify');
 
-gulp.task('templates', function(){
+gulp.task('scripts', function(){
   gulp.src(['app/**/*.js'])
-    .pipe(extDependencies())
+    .pipe(extify())
     .pipe(concat('scripts.js'))
     .pipe(gulp.dest('./build/'))
 });
@@ -25,26 +25,16 @@ gulp.task('templates', function(){
 
 ## API
 
-gulp-extjs-dependencies can be called with a file-path pointing to your entry app script file. It will return a list
-with a working order depending on your requires definitions.
+gulp-extify can be used to reorder your gulp.src files.
 
-### extDependencies(pathToYourEntryFile [, options])
-
-#### string
-Type: `String`
-
-The string to that points to your entry file.
-
-### gulp-extjs-dependencies options
-
-An optional third argument, `options`, can be passed.
+### extDependencies([, options])
 
 #### options
 Type: `Object`
 
 Coming soon
 
-[travis-url]: https://travis-ci.org/sebastian2015/gulp-extjs-dependencies
-[travis-image]: https://travis-ci.org/sebastian2015/gulp-extjs-dependencies.svg?branch=master
+[travis-url]: https://travis-ci.org/sebastian2015/gulp-extify
+[travis-image]: https://travis-ci.org/sebastian2015/gulp-extify.svg?branch=master
 [npm-url]: Coming soon
 [npm-image]: Coming soon

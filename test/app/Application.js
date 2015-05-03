@@ -2,7 +2,9 @@ Ext.define('My.Application', {
     extend: 'Ext.app.Application',
 
     requires: [
-        'My.controller.Root'
+        'AnotherClass',
+        'My.controller.Root',
+        'ExternalClass'
     ],
 
     controllers: [

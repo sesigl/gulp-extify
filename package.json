@@ -1,15 +1,15 @@
 {
-  "name": "gulp-extjs-dependencies",
+  "name": "gulp-extify",
   "version": "0.0.1",
-  "description": "Detects your extjs app files and returns the in the correct order depending on your requirements.",
+  "description": "Reorder your gulp sources depending on your extjs requirements.",
   "keywords": [
     "gulpplugin",
-    "gulp-extjs-dependencies",
+    "gulp-extify",
     "extjs",
     "dependencies",
     "preprocessor"
   ],
-  "homepage": "https://github.com/sebastian2015/gulp-extjs-dependencies",
+  "homepage": "https://github.com/sebarth/gulp-extify",
   "author": {
     "name": "Sebastian Barthel",
     "email": "akrillo89@gmail.com"
@@ -20,20 +20,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sebastian2015/gulp-extjs-dependencies.git"
+    "url": "git://github.com/sebarth/gulp-extify.git"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://raw.githubusercontent.com/sebastian2015/gulp-extjs-dependencies/master/LICENSE"
+      "url": "https://raw.githubusercontent.com/sebarthe/gulp-extify/master/LICENSE"
     }
   ],
   "dependencies": {
-    "gulp": "latest",
-    "through2" : "latest"
+    "event-stream": "^3.3.0",
+    "topo-sort": "^1.0.0"
   },
   "devDependencies": {
-    "mocha": "latest"
+    "chai": "^2.3.0",
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-mocha": "^2.0.1",
+    "gulp-util": "^3.0.4",
+    "mocha": "latest",
+    "path": "^0.11.14"
   },
   "scripts": {
     "test": "mocha -R spec"
