@@ -24,7 +24,7 @@ module.exports = function extify () {
 
         var currentClassWithApostrophes = fileContents.match(/Ext\.define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
-        var requirements = fileContents.match(/requires[.|\n|\r]*:[ |\n|\r]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,]*\]/);
+        var requirements = fileContents.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*\]/);
         var mixins = fileContents.match(/mixins[.|\n|\r]*:[ |\n|\r]*\{[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|:]*\}/);
         var extend = fileContents.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\.  ]*[\'|\"]/);
         var model = fileContents.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\.  ]*[\'|\"]/);
