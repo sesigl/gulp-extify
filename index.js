@@ -39,9 +39,6 @@ module.exports = function extify () {
         var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
         tsort.add(currentClass, dependencyClasses);
-        if(currentClass === "Gasx.extbase.component.form.NumberField") {
-            console.log(currentClass, ' => ', dependencyClasses);
-        }
         files[currentClass] = file;
 
     }, function afterFileCollection () {
