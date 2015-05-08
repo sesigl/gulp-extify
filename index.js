@@ -20,7 +20,7 @@ module.exports = function extify () {
             return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" is empty. You have to read it with gulp.src(..)'));
         }
 
-        var fileContents = file.contents.toString();
+        var fileContents = removeComments(file.contents.toString());
 
         var currentClassWithApostrophes = fileContents.match(/Ext\.define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
@@ -76,5 +76,9 @@ module.exports = function extify () {
         }
 
         return allClassNames;
+    }
+
+    function removeComments(content) {
+        return content.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm, '');
     }
 };
