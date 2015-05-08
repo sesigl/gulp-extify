@@ -25,9 +25,9 @@ module.exports = function extify () {
         var currentClassWithApostrophes = fileContents.match(/Ext\.define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
         var requirements = fileContents.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*\]/);
-        var mixins = fileContents.match(/mixins[.|\n|\r| ]*:[ |\n|\r]\{(.|\n)*?\}/);
-        var extend = fileContents.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\.  ]*[\'|\"]/);
-        var model = fileContents.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\.  ]*[\'|\"]/);
+        var mixins = fileContents.match(/mixins[.|\n|\r| ]*:[ |\n|\r]\{(.|\n|\r)*?\}/);
+        var extend = fileContents.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
+        var model = fileContents.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
 
         //parse classnames
         var currentClass = getClassNames(currentClassWithApostrophes)[0];
@@ -36,9 +36,12 @@ module.exports = function extify () {
         var mixinClasses = getClassNames(mixins);
         var modelClass = getClassNames(model);
 
-        var dependencyClasses = reqClasses.concat(extendClasses).concat(mixinClasses).concat(modelClass);
+        var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
         tsort.add(currentClass, dependencyClasses);
+        if(currentClass === "Gasx.extbase.component.form.NumberField") {
+            console.log(currentClass, ' => ', dependencyClasses);
+        }
         files[currentClass] = file;
 
     }, function afterFileCollection () {
