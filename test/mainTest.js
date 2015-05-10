@@ -54,6 +54,14 @@ describe('gulp-extify', function(){
             });
         });
 
+        describe("general parse behaviors", function () {
+            it("should parse alle Ext.define's", function () {
+                sort([fixture("app/base/Root.js"), fixture("app/controller/MulitpleDefinitionsInOneFileController.js")], function(resultFiles) {
+                    resultFiles.length.should.equal(4);
+                });
+            });
+        });
+
         describe("requires", function () {
             it("should put Root before application because application depends on root independent of file input ordering", function () {
                 sort([fixture("app/Application.js"),fixture("app/controller/Root.js")], function(resultFiles) {
