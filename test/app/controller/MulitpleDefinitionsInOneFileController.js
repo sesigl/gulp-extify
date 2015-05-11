@@ -10,5 +10,11 @@ Ext.define('My.controller.MultipleDefinitionsInOneFileController2', {
 });
 
 Ext.define('My.controller.MultipleDefinitionsInOneFileController3', {
-    extend: 'My.controller.MultipleDefinitionsInOneFileController2'
+    extend: 'My.mixin.MyMixin',
+    myFunction: function() {
+        Ext.define('My.innerFunction.shouldNotBeHandledAsACustomClassDefinition', {
+            extend : 'Ext.data.Model',
+            fields : []
+        });
+    }
 });

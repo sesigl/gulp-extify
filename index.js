@@ -16,42 +16,58 @@ module.exports = function extify () {
     var tsort = new TopoSort();
 
     return es.through(function collectFilesToSort (file) {
+        var defineRegexp = /Ext[ |\n|\r]*\.define[ |\n|\r]*\(/;
+
         if(!file.contents) {
             return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" is empty. You have to read it with gulp.src(..)'));
         }
 
         var fileContent = removeComments(file.contents.toString());
 
-        var startIndex = regexIndexOf(fileContent, /Ext[ |\n|\r]*\.define[ |\n|\r]*\(/);
-        var stopIndex = regexIndexOf(fileContent, /Ext[ |\n|\r]*\.define[ |\n|\r]*\(/, startIndex+1);
+        var startIndex = regexIndexOf(fileContent, defineRegexp);
+        var stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex+1);
 
         while(startIndex !== -1) {
-            if(stopIndex !== -1) {
+            if (stopIndex !== -1) {
                 var defineContent = fileContent.substr(startIndex, stopIndex);
             } else {
                 var defineContent = fileContent.substr(startIndex);
             }
-            var currentClassWithApostrophes = defineContent.match(/Ext\.define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
-            var requirements = defineContent.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*\]/);
-            var mixins = defineContent.match(/mixins[.|\n|\r| ]*:[ |\n|\r]\{(.|\n|\r)*?\}/);
-            var extend = defineContent.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
-            var model = defineContent.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
+            var openBraces = countChars(defineContent, '{');
+            var closedBraces = countChars(defineContent, '}');
 
-            //parse classnames
-            var currentClass = getClassNames(currentClassWithApostrophes)[0];
-            var reqClasses = getClassNames(requirements);
-            var extendClasses = getClassNames(extend);
-            var mixinClasses = getClassNames(mixins);
-            var modelClass = getClassNames(model);
+            if (openBraces === closedBraces) {
 
-            var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
+                var currentClassWithApostrophes = defineContent.match(/Ext\.define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
-            tsort.add(currentClass, dependencyClasses);
-            files[currentClass] = file;
+                var requirements = defineContent.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*\]/);
+                var mixins = defineContent.match(/mixins[.|\n|\r| ]*:[ |\n|\r]\{(.|\n|\r)*?\}/);
+                var extend = defineContent.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
+                var model = defineContent.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
 
-            startIndex = regexIndexOf(fileContent, /Ext[ |\n|\r]*\.define[ |\n|\r]*\(/, startIndex+1);
-            stopIndex = regexIndexOf(fileContent, /Ext[ |\n|\r]*\.define[ |\n|\r]*\(/, startIndex+1);
+                //parse classnames
+                var currentClass = getClassNames(currentClassWithApostrophes)[0];
+                var reqClasses = getClassNames(requirements);
+                var extendClasses = getClassNames(extend);
+                var mixinClasses = getClassNames(mixins);
+                var modelClass = getClassNames(model);
+
+                var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
+
+                tsort.add(currentClass, dependencyClasses);
+                files[currentClass] = file;
+
+                startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+            } else {
+                if(stopIndex !== -1) {
+                    stopIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
+                } else {
+                    startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                    stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                }
+            }
         }
     }, function afterFileCollection () {
 
@@ -69,6 +85,14 @@ module.exports = function extify () {
 
         this.emit('end');
     });
+
+    function countChars(str, char) {
+        var hist = {};
+        for (var si in str) {
+            hist[str[si]] = hist[str[si]] ? 1 + hist[str[si]] : 1;
+        };
+        return hist[char];
+    }
 
     function getClassNames(stringWithClassNames) {
         var allClassNames = [];

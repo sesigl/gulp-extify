@@ -56,8 +56,14 @@ describe('gulp-extify', function(){
 
         describe("general parse behaviors", function () {
             it("should parse alle Ext.define's", function () {
-                sort([fixture("app/base/Root.js"), fixture("app/controller/MulitpleDefinitionsInOneFileController.js")], function(resultFiles) {
-                    resultFiles.length.should.equal(4);
+                sort([
+                    fixture("app/mixin/MyMixin.js"),
+                    fixture("app/base/Root.js"),
+                    fixture("app/controller/MulitpleDefinitionsInOneFileController.js")
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(5);
+                    resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"MulitpleDefinitionsInOneFileController.js")
+                        .should.be.below(resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"MyMixin.js"));
                 });
             });
         });
@@ -125,7 +131,7 @@ describe('gulp-extify', function(){
 
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(5);
-                    resultFiles.indexOf("app"+path.sep+"moddel"+path.sep+"MyModel.js").should.be.below(resultFiles.indexOf("app"+path.sep+"store"+path.sep+"MyStore.js"));
+                    resultFiles.indexOf("app"+path.sep+"model"+path.sep+"MyModel.js").should.be.below(resultFiles.indexOf("app"+path.sep+"store"+path.sep+"MyStore.js"));
                 });
             });
         });
