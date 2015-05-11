@@ -102,13 +102,26 @@ describe('gulp-extify', function(){
         });
 
         describe("mixins", function () {
-            it("should put base.root before controller.root because controller.root depends on base.root independent of file input ordering", function () {
+            it("should parse simple mixins", function () {
                 sort([
+                    fixture("app/controller/BindableController.js"),
+                    fixture("app/mixin/BindableMixin.js"),
+                    fixture("app/mixin/BindableMixinOther.js"),
+
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(3);
+                    resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"BindableMixin.js").should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"BindableController.js"));
+                    resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"BindableMixinOther.js").should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"BindableController.js"));
+                });
+            });
+
+            it("should parse object mixins", function () {
+                sort([
+                    fixture("app/base/Root.js"),
+                    fixture("app/controller/Root.js"),
                     fixture("app/mixin/MyMixin.js"),
                     fixture("app/mixin/MyOtherMixin.js"),
                     fixture("app/Application.js"),
-                    fixture("app/controller/Root.js"),
-                    fixture("app/base/Root.js"),
 
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(5);
