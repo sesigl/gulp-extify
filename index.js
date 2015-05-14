@@ -39,7 +39,7 @@ module.exports = function extify () {
 
             if (openBraces === closedBraces) {
 
-                var currentClassWithApostrophes = defineContent.match(/Ext\.define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
+                var currentClassWithApostrophes = defineContent.match(/Ext[ |\n|\r]*\.[ |\n|\r]*define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
                 var requirements = defineContent.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*\]/);
                 var mixins = defineContent.match(/mixins[.|\n|\r| ]*:[ |\n|\r][\{|\[]+(.|\n|\r)*?(\}|\])+/);

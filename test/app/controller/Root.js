@@ -1,7 +1,8 @@
 /**
  *
  */
-Ext.define('My.controller.Root', {
+Ext
+    .define('My.controller.Root', {
     extend: 'My.base.Root',
     mixins: {
         myMixin: 'My.mixin.MyMixin',
