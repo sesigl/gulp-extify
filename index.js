@@ -14,6 +14,7 @@ module.exports = function extify () {
     var files = {};
     var classAnalytics = [];
     var tsort = new TopoSort();
+    var addedClasses = new Array();
 
     return es.through(function collectFilesToSort (file) {
         var defineRegexp = /Ext[ |\n|\r]*\.define[ |\n|\r]*\(/;
@@ -29,7 +30,7 @@ module.exports = function extify () {
 
         while(startIndex !== -1) {
             if (stopIndex !== -1) {
-                var defineContent = fileContent.substr(startIndex, stopIndex);
+                var defineContent = fileContent.substr(startIndex, stopIndex-startIndex);
             } else {
                 var defineContent = fileContent.substr(startIndex);
             }
@@ -78,7 +79,8 @@ module.exports = function extify () {
         }
 
         result.forEach(function (className) {
-            if(files[className]) {
+            if(files[className] && addedClasses.indexOf(files[className]) === -1) {
+                addedClasses.push(files[className]);
                 this.emit('data', files[className]);
             }
         }.bind(this));
