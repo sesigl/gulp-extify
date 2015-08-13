@@ -42,7 +42,7 @@ module.exports = function extify () {
 
                 var currentClassWithApostrophes = defineContent.match(/Ext[ |\n|\r]*\.[ |\n|\r]*define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
-                var requirements = defineContent.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*\[[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*\]/);
+                var requirements = defineContent.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*[\[]*[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*[\]]*/);
                 var mixins = defineContent.match(/mixins[.|\n|\r| ]*:[ |\n|\r][\{|\[]+(.|\n|\r)*?(\}|\])+/);
                 var extend = defineContent.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
                 var model = defineContent.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
@@ -53,6 +53,13 @@ module.exports = function extify () {
                 var extendClasses = getClassNames(extend);
                 var mixinClasses = getClassNames(mixins);
                 var modelClass = getClassNames(model);
+
+                if(currentClass == 'Gasx.extsys.stafel.app.view.DialogController') {
+                    console.log('\n\n');
+                    console.log(currentClass);
+                    console.log(reqClasses);
+                    console.log('\n\n');
+                }
 
                 var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
@@ -65,8 +72,8 @@ module.exports = function extify () {
                 if(stopIndex !== -1) {
                     stopIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
                 } else {
-                    startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
-                    stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                    //startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                    stopIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
                 }
             }
         }
@@ -116,6 +123,7 @@ module.exports = function extify () {
         return allClassNames;
     }
 
+    //noinspection Eslint
     function removeComments(content) {
         return content.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm, '');
     }

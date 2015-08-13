@@ -55,13 +55,13 @@ describe('gulp-extify', function(){
         });
 
         describe("general parse behaviors", function () {
-            it("should parse alle Ext.define's", function () {
+            it("should parse all Ext.define's", function () {
                 sort([
                     fixture("app/mixin/MyMixin.js"),
                     fixture("app/base/Root.js"),
                     fixture("app/controller/MulitpleDefinitionsInOneFileController.js")
                 ], function(resultFiles) {
-                    resultFiles.length.should.equal(5);
+                    resultFiles.length.should.equal(3);
                     resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"MulitpleDefinitionsInOneFileController.js")
                         .should.be.below(resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"MyMixin.js"));
                 });
@@ -80,6 +80,14 @@ describe('gulp-extify', function(){
                     resultFiles.length.should.equal(2);
                     resultFiles[0].should.equal("app"+path.sep+"controller"+path.sep+"Root.js");
                     resultFiles[1].should.equal("app"+path.sep+"Application.js");
+                });
+            });
+
+            it("should requires classes that are plain strings and no array like require: 'myclass' ", function () {
+                sort([fixture("app/requires/Req1.js"), fixture("app/requires/Req2.js")], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+                    resultFiles[0].should.equal("app" + path.sep + "requires"+path.sep+"Req2.js");
+                    resultFiles[1].should.equal("app" + path.sep + "requires"+path.sep+"Req1.js");
                 });
             });
         });
