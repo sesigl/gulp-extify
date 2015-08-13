@@ -54,13 +54,6 @@ module.exports = function extify () {
                 var mixinClasses = getClassNames(mixins);
                 var modelClass = getClassNames(model);
 
-                if(currentClass == 'Gasx.extsys.stafel.app.view.DialogController') {
-                    console.log('\n\n');
-                    console.log(currentClass);
-                    console.log(reqClasses);
-                    console.log('\n\n');
-                }
-
                 var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
                 tsort.add(currentClass, dependencyClasses);
