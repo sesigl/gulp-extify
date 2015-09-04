@@ -34,7 +34,7 @@ Type: `Object`
 
 Coming soon
 
-[travis-url]: https://travis-ci.org/sebarth/gulp-extify
-[travis-image]: https://travis-ci.org/sebarth/gulp-extify.svg?branch=master
+[travis-url]: https://travis-ci.org/Journerist/gulp-extify
+[travis-image]: https://travis-ci.org/Journerist/gulp-extify.svg?branch=master
 [npm-url]: https://www.npmjs.com/package/gulp-extify
 [npm-image]: https://badge.fury.io/js/gulp-extify.svg
