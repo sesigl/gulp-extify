@@ -14,6 +14,7 @@ module.exports = function extify () {
     var files = {};
     var classAnalytics = [];
     var tsort = new TopoSort();
+    var dependencies = {};
     var addedClasses = new Array();
 
     return es.through(function collectFilesToSort (file) {
@@ -56,7 +57,7 @@ module.exports = function extify () {
 
                 var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
-                tsort.add(currentClass, dependencyClasses);
+                dependencies[currentClass] = dependencyClasses;
                 files[currentClass] = file;
 
                 startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
@@ -72,6 +73,12 @@ module.exports = function extify () {
         }
     }, function afterFileCollection () {
 
+        dependencies = sortObjectByKey(dependencies);
+        for( var className in dependencies) {
+            if(className) {
+                tsort.add(className, dependencies[className]);
+            }
+        }
         try {
             var result = tsort.sort().reverse();
         } catch(e) {
@@ -125,4 +132,25 @@ module.exports = function extify () {
         var indexOf = str.substring(startpos || 0).search(regex);
         return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
     }
+
+    function sortObjectByKey (obj){
+        var keys = [];
+        var sorted_obj = {};
+
+        for(var key in obj){
+            if(obj.hasOwnProperty(key)){
+                keys.push(key);
+            }
+        }
+
+        // sort keys
+        keys.sort();
+
+        // create new array based on Sorted Keys
+        keys.forEach(function(key) {
+            sorted_obj[key] = obj[key];
+        });
+
+        return sorted_obj;
+    };
 };
