@@ -3,7 +3,6 @@
 var es = require('event-stream');
 var TopoSort = require('topo-sort');
 var gutil = require('gulp-util');
-var File = require('vinyl');
 var PluginError = gutil.PluginError;
 //var fs = require('fs');
 
