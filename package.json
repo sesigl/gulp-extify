@@ -1,6 +1,6 @@
 {
   "name": "gulp-extify",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Reorder your gulp sources depending on your extjs requirements.",
   "keywords": [
     "gulpplugin",
