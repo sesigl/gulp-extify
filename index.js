@@ -10,104 +10,13 @@ var PluginError = gutil.PluginError;
 var PLUGIN_NAME = 'gulp-extify';
 
 /**
- * Created by hpilz on 27.10.2015.
- */
-'use strict';
-var TopoSortTarjan = function() {
-    // permanently marked nodes
-    this.markedPermanently = Object.create(null);
-    // The key node points to value nodes
-    this.map = Object.create(null);
-}
-/**
- * Add node and depenencies
- * @param {Object} node Non null object.
- * @param {[Object]} nodes The other nodes being pointed to, item or elements in it must not be null or empty string.
- */
-TopoSortTarjan.prototype.add = function(node, nodes) {
-    nodes = Array.isArray(nodes) ? nodes : [ nodes ];
-
-    // initialize node's incoming edges count.
-    // The current node has 0 incoming edge.
-    this.markedPermanently[node] = false;
-
-    // And other nodes, which by default have 1 incoming edge, or if node already exist increase its incoming edge count.
-    for (var i = 0; i < nodes.length; ++i) {
-        var n = nodes[i];
-        this.markedPermanently[n] = false;
-    }
-
-    this.map[node] = this.map[node] ? this.map[node].concat(nodes) : nodes;
-};
-
-/**
- * Sort the graph. Circular graph throw an error with the circular nodes info.
- * Implementation of {@link http://en.wikipedia.org/wiki/Topological_sorting#Tarjan.27s_algorithm}
- * Reference: http://courses.cs.washington.edu/courses/cse326/03wi/lectures/RaoLect20.pdf
- * @return {[Array]} Sorted list
- */
-TopoSortTarjan.prototype.sort = function() {
-    // hold scope
-    var me = this;
-    // The list contains the final sorted nodes.
-    var l = [];
-
-    // detected cycle
-    var cycle = [];
-    // temporarily marked nodes (for detecting cycles)
-    var markedTemp = {};
-    var visitNode = function(node) {
-        cycle.push(node);
-        if (markedTemp[node]) {
-            throw {
-                type : 'Exception',
-                msg : 'Already marked. Cycle detected in Dependency-Graph.',
-                cycle : cycle
-            };
-        } else {
-            markedTemp[node] = true;
-            if(me.map[node]){
-                me.map[node].forEach(visitNode);
-            }
-            me.markedPermanently[node] = true;
-            delete markedTemp[node];
-            cycle.pop();
-            if(l.indexOf(node) === -1){
-                l.push(node);
-            }
-        }
-    };
-
-    var selectNode = function() {
-        for ( var selectedNode in me.markedPermanently) {
-            if (!me.markedPermanently[selectedNode]) {
-                return selectedNode;
-            }
-        }
-        return null;
-    }
-
-    var allNodesMarked = false;
-    while (!allNodesMarked) {
-        var currentNode = selectNode.call(me);
-        if (currentNode) {
-            visitNode.call(me, currentNode);
-        } else {
-            allNodesMarked = true;
-        }
-    }
-
-    return l.reverse();
-};
-
-/**
  * this file just make sure that the test will work
  */
 module.exports = function extify () {
     var files = {};
     var referencesFilesMap = {};
     var classAnalytics = [];
-    var tsort = new TopoSortTarjan();
+    var tsort = new TopoSort();
 
     var dependencies = {};
     var addedClasses = new Array();
@@ -207,15 +116,6 @@ module.exports = function extify () {
         result.forEach(function (className) {
             if(files[className] && addedClasses.indexOf(files[className]) === -1) {
                 addedClasses.push(files[className]);
-
-                //var splitFile = new File({
-                //    cwd: files[className].cwd,
-                //    base: files[className].base,
-                //    path: files[className].path,
-                //    contents: new Buffer(filesContent[className])
-                //});
-
-                //this.emit('data', splitFile);
                 this.emit('data', files[className]);
             }
         }.bind(this));
