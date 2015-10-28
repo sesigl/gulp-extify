@@ -66,6 +66,18 @@ describe('gulp-extify', function(){
                         .should.be.below(resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"MyMixin.js"));
                 });
             });
+
+            it("should not parse inner defines", function () {
+                sort([
+                    fixture("app/base/ClassWithInnerDefines.js"),
+                    fixture("app/base/ClassThatRequiresInnerDefine.js")
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+
+                    resultFiles[0].should.equal("app" + path.sep + "base"+path.sep+"ClassThatRequiresInnerDefine.js");
+                    resultFiles[1].should.equal("app" + path.sep + "base"+path.sep+"ClassWithInnerDefines.js");
+                });
+            });
         });
 
         describe("requires", function () {

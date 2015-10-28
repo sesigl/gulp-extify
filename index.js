@@ -4,6 +4,7 @@ var es = require('event-stream');
 var TopoSort = require('topo-sort');
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
+//var fs = require('fs');
 
 var PLUGIN_NAME = 'gulp-extify';
 
@@ -14,6 +15,7 @@ module.exports = function extify () {
     var files = {};
     var classAnalytics = [];
     var tsort = new TopoSort();
+
     var dependencies = {};
     var addedClasses = new Array();
 
@@ -32,10 +34,12 @@ module.exports = function extify () {
         while(startIndex !== -1) {
             if (stopIndex !== -1) {
                 var defineContent = fileContent.substr(startIndex, stopIndex-startIndex);
+                var contentUntilStopIndex = fileContent.substr(0, stopIndex);
             } else {
                 var defineContent = fileContent.substr(startIndex);
+                var contentUntilStopIndex = fileContent;
             }
-
+            var braceDiffUntilStopIndex = Math.abs(countChars(contentUntilStopIndex, '{') - countChars(contentUntilStopIndex, '}'));
             var openBraces = countChars(defineContent, '{');
             var closedBraces = countChars(defineContent, '}');
 
@@ -55,19 +59,26 @@ module.exports = function extify () {
                 var mixinClasses = getClassNames(mixins);
                 var modelClass = getClassNames(model);
 
+
                 var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
-                dependencies[currentClass] = dependencyClasses;
-                files[currentClass] = file;
+                if(braceDiffUntilStopIndex === 0) {
+                    dependencies[currentClass] = dependencyClasses;
+                    files[currentClass] = file;
+                }
 
-                startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                if(stopIndex !== -1) {
+                    startIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
+                } else {
+                    startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                }
+
                 stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
             } else {
                 if(stopIndex !== -1) {
                     stopIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
                 } else {
-                    //startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
-                    stopIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
+                    startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
                 }
             }
         }
@@ -75,15 +86,20 @@ module.exports = function extify () {
 
         dependencies = sortObjectByKey(dependencies);
         for( var className in dependencies) {
-            if(className) {
+            if(className != "undefined") {
                 tsort.add(className, dependencies[className]);
             }
         }
+
+        //fs.writeFile('tsort.map.txt', JSON.stringify(tsort.map));
+
         try {
             var result = tsort.sort().reverse();
         } catch(e) {
             return this.emit('error', new PluginError(PLUGIN_NAME, e.message));
         }
+
+        //fs.writeFile('tsort.result.txt', JSON.stringify(result));
 
         result.forEach(function (className) {
             if(files[className] && addedClasses.indexOf(files[className]) === -1) {
