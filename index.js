@@ -4,6 +4,7 @@ var es = require('event-stream');
 var TopoSort = require('topo-sort');
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
+//var fs = require('fs');
 
 var PLUGIN_NAME = 'gulp-extify';
 
@@ -12,8 +13,11 @@ var PLUGIN_NAME = 'gulp-extify';
  */
 module.exports = function extify () {
     var files = {};
+    var referencesFilesMap = {};
     var classAnalytics = [];
     var tsort = new TopoSort();
+
+    var dependencies = {};
     var addedClasses = new Array();
 
     return es.through(function collectFilesToSort (file) {
@@ -31,10 +35,12 @@ module.exports = function extify () {
         while(startIndex !== -1) {
             if (stopIndex !== -1) {
                 var defineContent = fileContent.substr(startIndex, stopIndex-startIndex);
+                var contentUntilStopIndex = fileContent.substr(0, stopIndex);
             } else {
                 var defineContent = fileContent.substr(startIndex);
+                var contentUntilStopIndex = fileContent;
             }
-
+            var braceDiffUntilStopIndex = Math.abs(countChars(contentUntilStopIndex, '{') - countChars(contentUntilStopIndex, '}'));
             var openBraces = countChars(defineContent, '{');
             var closedBraces = countChars(defineContent, '}');
 
@@ -55,9 +61,7 @@ module.exports = function extify () {
                 }
 
 
-
                 //parse classnames
-               
                 var currentClass = [],
                     reqClasses = [],
                     extendClasses = [],
@@ -83,27 +87,54 @@ module.exports = function extify () {
                 }
                 var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
-                tsort.add(currentClass, dependencyClasses);
-                files[currentClass] = file;
+                if(braceDiffUntilStopIndex === 0) {
+                    dependencies[currentClass] = dependencyClasses;
+                    files[currentClass] = file;
 
-                startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                    //put all file paths in a map, and update all concat all dependencies
+                    if(!referencesFilesMap[file.path]) {
+                        referencesFilesMap[file.path] = [currentClass];
+                    } else {
+                        referencesFilesMap[file.path].forEach(function(refClassName) {
+                            dependencies[refClassName] = concatUnique(dependencies[refClassName], dependencies[currentClass]);
+                            dependencies[currentClass] = concatUnique(dependencies[currentClass], dependencies[currentClass]);
+                        });
+                    }
+                }
+
+                if(stopIndex !== -1) {
+                    startIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
+                } else {
+                    startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
+                }
+
                 stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
             } else {
                 if(stopIndex !== -1) {
                     stopIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
                 } else {
-                    //startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
-                    stopIndex = regexIndexOf(fileContent, defineRegexp, stopIndex + 1);
+                    startIndex = regexIndexOf(fileContent, defineRegexp, startIndex + 1);
                 }
             }
         }
     }, function afterFileCollection () {
+
+        dependencies = sortObjectByKey(dependencies);
+        for( var className in dependencies) {
+            if(className != "undefined") {
+                tsort.add(className, dependencies[className]);
+            }
+        }
+
+        //fs.writeFile('tsort.map.txt', JSON.stringify(tsort.map));
 
         try {
             var result = tsort.sort().reverse();
         } catch(e) {
             return this.emit('error', new PluginError(PLUGIN_NAME, e.message));
         }
+
+        //fs.writeFile('tsort.result.txt', JSON.stringify(result));
 
         result.forEach(function (className) {
             if(files[className] && addedClasses.indexOf(files[className]) === -1) {
@@ -143,6 +174,15 @@ module.exports = function extify () {
         return allClassNames;
     }
 
+    function concatUnique(arr1, arr2) {
+        arr2.forEach(function(element) {
+            if(arr1.indexOf(element) === -1) {
+                arr1.push(element);
+            }
+        });
+        return arr1;
+    }
+
     //noinspection Eslint
     function removeComments(content) {
         return content.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm, '');
@@ -152,4 +192,25 @@ module.exports = function extify () {
         var indexOf = str.substring(startpos || 0).search(regex);
         return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
     }
+
+    function sortObjectByKey (obj){
+        var keys = [];
+        var sorted_obj = {};
+
+        for(var key in obj){
+            if(obj.hasOwnProperty(key)){
+                keys.push(key);
+            }
+        }
+
+        // sort keys
+        keys.sort();
+
+        // create new array based on Sorted Keys
+        keys.forEach(function(key) {
+            sorted_obj[key] = obj[key];
+        });
+
+        return sorted_obj;
+    };
 };

@@ -55,15 +55,28 @@ describe('gulp-extify', function(){
         });
 
         describe("general parse behaviors", function () {
-            it("should parse all Ext.define's", function () {
+            it("should parse all Ext.define's and should pay attention to each of the requirements", function () {
                 sort([
                     fixture("app/mixin/MyMixin.js"),
                     fixture("app/base/Root.js"),
                     fixture("app/controller/MulitpleDefinitionsInOneFileController.js")
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(3);
-                    resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"MulitpleDefinitionsInOneFileController.js")
-                        .should.be.below(resultFiles.indexOf("app"+path.sep+"mixin"+path.sep+"MyMixin.js"));
+                    resultFiles[0].should.equal("app" + path.sep + "base"+path.sep+"Root.js");
+                    resultFiles[1].should.equal("app" + path.sep + "mixin"+path.sep+"MyMixin.js");
+                    resultFiles[2].should.equal("app" + path.sep + "controller"+path.sep+"MulitpleDefinitionsInOneFileController.js");
+                });
+            });
+
+            it("should not parse inner defines", function () {
+                sort([
+                    fixture("app/base/ClassWithInnerDefines.js"),
+                    fixture("app/base/ClassThatRequiresInnerDefine.js")
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+
+                    resultFiles[0].should.equal("app" + path.sep + "base"+path.sep+"ClassThatRequiresInnerDefine.js");
+                    resultFiles[1].should.equal("app" + path.sep + "base"+path.sep+"ClassWithInnerDefines.js");
                 });
             });
         });

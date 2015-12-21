@@ -6,7 +6,7 @@ Ext.define('My.controller.MultipleDefinitionsInOneFileController1', {
 });
 
 Ext.define('My.controller.MultipleDefinitionsInOneFileController2', {
-    extend: 'My.controller.MultipleDefinitionsInOneFileController1'
+    requires: ['My.controller.Root']
 });
 
 Ext.define('My.controller.MultipleDefinitionsInOneFileController3', {
