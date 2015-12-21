@@ -47,13 +47,40 @@ module.exports = function extify () {
                 var extend = defineContent.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
                 var model = defineContent.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
 
-                //parse classnames
-                var currentClass = getClassNames(currentClassWithApostrophes)[0];
-                var reqClasses = getClassNames(requirements);
-                var extendClasses = getClassNames(extend);
-                var mixinClasses = getClassNames(mixins);
-                var modelClass = getClassNames(model);
+                var Ext = {
+                    define: function(name, a) {
+                        a.klass = name;
+                        throw a;
+                    }
+                }
 
+
+
+                //parse classnames
+               
+                var currentClass = [],
+                    reqClasses = [],
+                    extendClasses = [],
+                    mixinClasses = [],
+                    modelClass = [];
+
+                try {
+                    eval(defineContent);
+                } catch (e) {
+                    if (e instanceof Error) {
+                        currentClass = getClassNames(currentClassWithApostrophes)[0];
+                        reqClasses = getClassNames(requirements);
+                        extendClasses = getClassNames(extend);
+                        mixinClasses = getClassNames(mixins);
+                        modelClass = getClassNames(model);
+                    } else {
+                        currentClass = [e.klass];
+                        reqClasses = e.requires || [];
+                        extendClasses = [e.extend || "Ext.Base"];
+                        mixinClasses = []; // whatever
+                        modelClass = [e.model || "Ext.Base"];
+                    }
+                }
                 var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
                 tsort.add(currentClass, dependencyClasses);
