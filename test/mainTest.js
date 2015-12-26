@@ -143,7 +143,7 @@ describe('gulp-extify', function(){
                     resultFiles[0].should.equal("app" + path.sep + "base" + path.sep + "Root.js");
                     resultFiles[1].should.equal("app" + path.sep + "base"  + path.sep + "ClassWithWsAroundColons.js");
 
-                })
+                });
             });
         });
 
@@ -189,7 +189,7 @@ describe('gulp-extify', function(){
                     resultFiles[1].should.equal("app" + path.sep + "mixin" + path.sep + "MyOtherMixin.js");
                     resultFiles[2].should.equal("app" + path.sep + "base"  + path.sep + "ClassWithTabsInMixins.js");
 
-                })
+                });
             });
         });
 
@@ -217,7 +217,7 @@ describe('gulp-extify', function(){
                     resultFiles[0].should.equal("app" + path.sep + "model" + path.sep + "MyModel.js");
                     resultFiles[1].should.equal("app" + path.sep + "base"  + path.sep + "ClassWithWsAroundColons.js");
 
-                })
+                });
             });
         });
     });

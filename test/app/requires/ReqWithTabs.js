@@ -5,4 +5,4 @@ Ext.define("My.requires.ReqWithTabs", {
 		"Req2"
 	]
 
-})
+});
