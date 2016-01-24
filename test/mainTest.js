@@ -103,6 +103,19 @@ describe('gulp-extify', function(){
                     resultFiles[1].should.equal("app" + path.sep + "requires"+path.sep+"Req1.js");
                 });
             });
+
+            it("should allow tabs in requires", function() {
+                sort([
+                    fixture("app/requires/ReqWithTabs.js"),
+                    fixture("app/store/MyStore.js"),
+                    fixture("app/requires/Req2.js")
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(3);
+                    resultFiles[0].should.equal("app" + path.sep + "store"    + path.sep + "MyStore.js");
+                    resultFiles[1].should.equal("app" + path.sep + "requires" + path.sep + "Req2.js");
+                    resultFiles[2].should.equal("app" + path.sep + "requires" + path.sep + "ReqWithTabs.js");
+                });
+            });
         });
 
         describe("extend", function () {
@@ -118,6 +131,18 @@ describe('gulp-extify', function(){
                     resultFiles[0].should.equal("app"+path.sep+"base"+path.sep+"Root.js");
                     resultFiles[1].should.equal("app"+path.sep+"controller"+path.sep+"Root.js");
                     resultFiles[2].should.equal("app"+path.sep+"Application.js");
+                });
+            });
+
+            it("should allow any whitespace around the colon in extend", function() {
+                sort([
+                    fixture("app/base/ClassWithWsAroundColons.js"),
+                    fixture("app/base/Root.js")
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+                    resultFiles[0].should.equal("app" + path.sep + "base" + path.sep + "Root.js");
+                    resultFiles[1].should.equal("app" + path.sep + "base"  + path.sep + "ClassWithWsAroundColons.js");
+
                 });
             });
         });
@@ -152,6 +177,20 @@ describe('gulp-extify', function(){
                     resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js").should.be.below(resultFiles.indexOf("app"+path.sep+"Application.js"));
                 });
             });
+
+            it("should allow tabs in mixins", function() {
+                sort([
+                    fixture("app/base/ClassWithTabsInMixins.js"),
+                    fixture("app/mixin/MyOtherMixin.js"),
+                    fixture("app/mixin/MyMixin.js")
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(3);
+                    resultFiles[0].should.equal("app" + path.sep + "mixin" + path.sep + "MyMixin.js");
+                    resultFiles[1].should.equal("app" + path.sep + "mixin" + path.sep + "MyOtherMixin.js");
+                    resultFiles[2].should.equal("app" + path.sep + "base"  + path.sep + "ClassWithTabsInMixins.js");
+
+                });
+            });
         });
 
         describe("model", function () {
@@ -166,6 +205,18 @@ describe('gulp-extify', function(){
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(5);
                     resultFiles.indexOf("app"+path.sep+"model"+path.sep+"MyModel.js").should.be.below(resultFiles.indexOf("app"+path.sep+"store"+path.sep+"MyStore.js"));
+                });
+            });
+
+            it("should allow any whitespace around the colon in model", function() {
+                sort([
+                    fixture("app/base/ClassWithWsAroundColons.js"),
+                    fixture("app/model/MyModel.js")
+                ], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+                    resultFiles[0].should.equal("app" + path.sep + "model" + path.sep + "MyModel.js");
+                    resultFiles[1].should.equal("app" + path.sep + "base"  + path.sep + "ClassWithWsAroundColons.js");
+
                 });
             });
         });
