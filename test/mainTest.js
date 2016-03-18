@@ -1,49 +1,6 @@
-var chai = require('chai'),
-    should = chai.should(),
-    extify = require("./../"),
-    gutil = require('gulp-util'),
-    path = require('path'),
-    fs = require('fs'),
-    path = require("path");
+var fs = require('fs');
 
-
-function fixture(file, config) {
-    var filepath = path.join(__dirname, file);
-    return new gutil.File({
-        path: filepath,
-        cwd: __dirname,
-        base: __dirname,
-        contents: config && config.withoutContents ? undefined : fs.readFileSync(filepath)
-    });
-}
-
-function sort(files, checkResults, handleError) {
-    var resultFiles = [];
-
-    var stream = extify();
-
-    stream.on('data', function (file) {
-        resultFiles.push(file.relative);
-    });
-
-    stream.on('error', function (err) {
-        if (handleError) {
-            handleError(err);
-        } else {
-            should.exist(err);
-        }
-    });
-
-    stream.on('end', function () {
-        checkResults(resultFiles);
-    });
-
-    files.forEach(function (file) {
-        stream.write(file);
-    });
-
-    stream.end();
-}
+eval(fs.readFileSync('./test/testSetup.js')+'');
 
 describe('gulp-extify', function(){
     describe("file ordering", function () {
@@ -127,7 +84,7 @@ describe('gulp-extify', function(){
                 sort([
                     fixture("app/controller/BindableController.js"),
                     fixture("app/mixin/BindableMixin.js"),
-                    fixture("app/mixin/BindableMixinOther.js"),
+                    fixture("app/mixin/BindableMixinOther.js")
 
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(3);
@@ -142,7 +99,7 @@ describe('gulp-extify', function(){
                     fixture("app/controller/Root.js"),
                     fixture("app/mixin/MyMixin.js"),
                     fixture("app/mixin/MyOtherMixin.js"),
-                    fixture("app/Application.js"),
+                    fixture("app/Application.js")
 
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(5);
@@ -161,7 +118,7 @@ describe('gulp-extify', function(){
                     fixture("app/controller/Root.js"),
                     fixture("app/store/MyStore.js"),
                     fixture("app/model/MyModel.js"),
-                    fixture("app/base/Root.js"),
+                    fixture("app/base/Root.js")
 
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(5);
@@ -174,7 +131,7 @@ describe('gulp-extify', function(){
     describe("errors", function () {
         it("should be read with gulp.src", function () {
             sort([
-                "app/controller/Empty.js",
+                "app/controller/Empty.js"
             ], function(resultFiles) {
                 resultFiles.length.should.equal(0);
             }, function(err) {
