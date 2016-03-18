@@ -14,14 +14,13 @@ var PLUGIN_NAME = 'gulp-extify';
 module.exports = function extify () {
     var files = {};
     var referencesFilesMap = {};
-    var classAnalytics = [];
     var tsort = new TopoSort();
 
     var dependencies = {};
-    var addedClasses = new Array();
+    var addedClasses = [];
 
     return es.through(function collectFilesToSort (file) {
-        var defineRegexp = /Ext[ |\n|\r]*\.define[ |\n|\r]*\(/;
+        var defineRegexp = /Ext[\s|\n|\r]*\.define[\s|\n|\r]*\(/;
 
         if(!file.contents) {
             return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" is empty. You have to read it with gulp.src(..)'));
@@ -33,12 +32,13 @@ module.exports = function extify () {
         var stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex+1);
 
         while(startIndex !== -1) {
+            var defineContent, contentUntilStopIndex;
             if (stopIndex !== -1) {
-                var defineContent = fileContent.substr(startIndex, stopIndex-startIndex);
-                var contentUntilStopIndex = fileContent.substr(0, stopIndex);
+                defineContent = fileContent.substr(startIndex, stopIndex-startIndex);
+                contentUntilStopIndex = fileContent.substr(0, stopIndex);
             } else {
-                var defineContent = fileContent.substr(startIndex);
-                var contentUntilStopIndex = fileContent;
+                defineContent = fileContent.substr(startIndex);
+                contentUntilStopIndex = fileContent;
             }
             var braceDiffUntilStopIndex = Math.abs(countChars(contentUntilStopIndex, '{') - countChars(contentUntilStopIndex, '}'));
             var openBraces = countChars(defineContent, '{');
@@ -46,12 +46,12 @@ module.exports = function extify () {
 
             if (openBraces === closedBraces) {
 
-                var currentClassWithApostrophes = defineContent.match(/Ext[ |\n|\r]*\.[ |\n|\r]*define[ |\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
+                var currentClassWithApostrophes = defineContent.match(/Ext[\s|\n|\r]*\.[\s|\n|\r]*define[\s|\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
-                var requirements = defineContent.match(/requires[.|\n|\r| ]*:[ |\n|\r|]*[\[]*[a-zA-Z0-9|\n|\r|\'|\"| |\.|,|\/]*[\]]*/);
-                var mixins = defineContent.match(/mixins[.|\n|\r| ]*:[ |\n|\r][\{|\[]+(.|\n|\r)*?(\}|\])+/);
-                var extend = defineContent.match(/extend[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
-                var model = defineContent.match(/model[ |\n|\r]*:[ |\n|\r]*[\'|\"][a-zA-Z\. ]*[\'|\"]/);
+                var requirements = defineContent.match(/requires[.|\n|\r|\s]*:[\s|\n|\r|]*[\[]*[a-zA-Z0-9|\n|\r|\'|\"|\s|\.|,|\/]*[\]]*/);
+                var mixins = defineContent.match(/mixins[.|\n|\r| ]*:[\s|\n|\r][\{|\[]+(.|\n|\r)*?(\}|\])+/);
+                var extend = defineContent.match(/extend[\s|\n|\r]*:[\s|\n|\r]*[\'|\"][a-zA-Z\.\s]*[\'|\"]/);
+                var model = defineContent.match(/model[\s|\n|\r]*:[\s|\n|\r]*[\'|\"][a-zA-Z\.\s]*[\'|\"]/);
 
                 //parse classnames
                 var currentClass = getClassNames(currentClassWithApostrophes)[0];
@@ -126,7 +126,7 @@ module.exports = function extify () {
         var hist = {};
         for (var si in str) {
             hist[str[si]] = hist[str[si]] ? 1 + hist[str[si]] : 1;
-        };
+        }
         return hist[char];
     }
 
@@ -188,5 +188,5 @@ module.exports = function extify () {
         });
 
         return sorted_obj;
-    };
+    }
 };
