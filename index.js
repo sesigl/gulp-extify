@@ -8,6 +8,12 @@ var PluginError = gutil.PluginError;
 
 var PLUGIN_NAME = 'gulp-extify';
 
+//debugging flags
+var debug = {
+    enabled : false,
+    showContent : false
+};
+
 /**
  * this file just make sure that the test will work
  */
@@ -22,29 +28,54 @@ module.exports = function extify () {
     return es.through(function collectFilesToSort (file) {
         var defineRegexp = /Ext[\s|\n|\r]*\.define[\s|\n|\r]*\(/;
 
+        if(debug.enabled) {
+            console.log("Parsing file: " + file.relative + '\n' );
+
+            if(debug.showContent) {
+                console.log("Content: " + file.contents.toString() + '\n' );
+            }
+        }
+
         if(!file.contents) {
             return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" is empty. You have to read it with gulp.src(..)'));
         }
 
         var fileContent = removeComments(file.contents.toString());
 
+        if(debug.enabled && debug.showContent) {
+            console.log("Content with no comments: " + fileContent + '\n' );
+        }
+
         var startIndex = regexIndexOf(fileContent, defineRegexp);
         var stopIndex = regexIndexOf(fileContent, defineRegexp, startIndex+1);
 
         while(startIndex !== -1) {
-            var defineContent, contentUntilStopIndex;
+            var defineContent, contentUntilStopIndex, contentUntilStopIndexCleared;
             if (stopIndex !== -1) {
                 defineContent = fileContent.substr(startIndex, stopIndex-startIndex);
                 contentUntilStopIndex = fileContent.substr(0, stopIndex);
+                contentUntilStopIndexCleared = removeNotRequiredBracesFrom(contentUntilStopIndex);
             } else {
                 defineContent = fileContent.substr(startIndex);
                 contentUntilStopIndex = fileContent;
+                contentUntilStopIndexCleared = removeNotRequiredBracesFrom(fileContent);
             }
-            var braceDiffUntilStopIndex = Math.abs(countChars(contentUntilStopIndex, '{') - countChars(contentUntilStopIndex, '}'));
-            var openBraces = countChars(defineContent, '{');
-            var closedBraces = countChars(defineContent, '}');
+            var braceDiffUntilStopIndex = Math.abs(countChars(contentUntilStopIndexCleared, '{') - countChars(contentUntilStopIndexCleared, '}'));
+
+            //remove strings and regexp from content. They could be counted and cause brace count related bugs.
+            var strClearedContent = removeNotRequiredBracesFrom(defineContent);
+            var openBraces = countChars(strClearedContent, '{');
+            var closedBraces = countChars(strClearedContent, '}');
+
+            if(debug.enabled) {
+                console.log("Counting braces: open braces = " + openBraces + ' closing braces: ' + closedBraces + '\n' );
+            }
 
             if (openBraces === closedBraces) {
+
+                if(debug.enabled) {
+                    console.log('Open-close brace count is equal' + '\n');
+                }
 
                 var currentClassWithApostrophes = defineContent.match(/Ext[\s|\n|\r]*\.[\s|\n|\r]*define[\s|\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
 
@@ -60,11 +91,15 @@ module.exports = function extify () {
                 var mixinClasses = getClassNames(mixins);
                 var modelClass = getClassNames(model);
 
-
                 var dependencyClasses = mixinClasses.concat(extendClasses).concat(reqClasses).concat(modelClass);
 
                 if(braceDiffUntilStopIndex === 0) {
                     dependencies[currentClass] = dependencyClasses;
+
+                    if(debug.enabled) {
+                        console.log('Adding class to dependencies: ' + currentClass + '\n');
+                    }
+
                     files[currentClass] = file;
 
                     //put all file paths in a map, and update all concat all dependencies
@@ -121,6 +156,10 @@ module.exports = function extify () {
 
         this.emit('end');
     });
+
+    function removeNotRequiredBracesFrom(str) {
+        return str.replace(/('.*?[^\\]'|".*?[^\\]"|\/.*?[^\\]\/)/gm, '')
+    }
 
     function countChars(str, char) {
         var hist = {};
