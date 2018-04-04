@@ -77,12 +77,12 @@ module.exports = function extify () {
                     console.log('Open-close brace count is equal' + '\n');
                 }
 
-                var currentClassWithApostrophes = defineContent.match(/Ext[\s|\n|\r]*\.[\s|\n|\r]*define[\s|\n|\r|\(]*?[\'|\"][a-zA-Z0-9\.]*?[\'|\"]/);
+                var currentClassWithApostrophes = defineContent.match(/Ext[\s|\n|\r]*\.[\s|\n|\r]*define[\s|\n|\r|\(]*?[\'|\"][a-zA-Z0-9_\.]*?[\'|\"]/);
 
-                var requirements = defineContent.match(/requires[.|\n|\r|\s]*:[\s|\n|\r|]*[\[]*[a-zA-Z0-9|\n|\r|\'|\"|\s|\.|,|\/]*[\]]*/);
+                var requirements = defineContent.match(/requires[.|\n|\r|\s]*:[\s|\n|\r|]*[\[]*[a-zA-Z0-9|\n|\r|\'|\"|\s|\.|,|_|\/]*[\]]*/);
                 var mixins = defineContent.match(/mixins[.|\n|\r| ]*:[\s|\n|\r][\{|\[]+(.|\n|\r)*?(\}|\])+/);
-                var extend = defineContent.match(/extend[\s|\n|\r]*:[\s|\n|\r]*[\'|\"][a-zA-Z\.\s]*[\'|\"]/);
-                var model = defineContent.match(/model[\s|\n|\r]*:[\s|\n|\r]*[\'|\"][a-zA-Z\.\s]*[\'|\"]/);
+                var extend = defineContent.match(/extend[\s|\n|\r]*:[\s|\n|\r]*[\'|\"][a-zA-Z0-9_\.\s]*[\'|\"]/);
+                var model = defineContent.match(/model[\s|\n|\r]*:[\s|\n|\r]*[\'|\"][a-zA-Z0-9_\.\s]*[\'|\"]/);
 
                 //parse classnames
                 var currentClass = getClassNames(currentClassWithApostrophes)[0];
@@ -175,7 +175,7 @@ module.exports = function extify () {
         if(stringWithClassNames) {
             var i = 0;
             stringWithClassNames.forEach(function (req) {
-                var classNames = req.match(/[\'|\"][a-zA-Z0-9\.]+[\'|\"]/g);
+                var classNames = req.match(/[\'|\"][a-zA-Z0-9\._]+[\'|\"]/g);
                 if(classNames) {
                     classNames.forEach(function (c, index) {
                         if (typeof index === "number") {

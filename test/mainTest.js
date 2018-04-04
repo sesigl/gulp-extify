@@ -60,6 +60,19 @@ describe('gulp-extify', function(){
                     resultFiles[1].should.equal("app" + path.sep + "requires"+path.sep+"Req1.js");
                 });
             });
+
+            it("should be able to require files with _", function () {
+                sort([
+                        fixture("app/requires/ReqForUnderscores.js"), 
+                        fixture("app/requires/_Req.js"), 
+                        fixture("app/requires/Req_.js")
+                    ], function(resultFiles) {
+                    resultFiles.length.should.equal(3);
+                    resultFiles[0].should.equal("app" + path.sep + "requires"+path.sep+"_Req.js");
+                    resultFiles[1].should.equal("app" + path.sep + "requires"+path.sep+"Req_.js");
+                    resultFiles[2].should.equal("app" + path.sep + "requires"+path.sep+"ReqForUnderscores.js");
+                });
+            });
         });
 
         describe("extend", function () {
@@ -75,6 +88,13 @@ describe('gulp-extify', function(){
                     resultFiles[0].should.equal("app"+path.sep+"base"+path.sep+"Root.js");
                     resultFiles[1].should.equal("app"+path.sep+"controller"+path.sep+"Root.js");
                     resultFiles[2].should.equal("app"+path.sep+"Application.js");
+                });
+            });
+            it("should be possible to extend files with _", function () {
+                sort([fixture("app/controller/MyUnderscoreController.js"), fixture("app/controller/Controller_Base.js")], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+                    resultFiles[0].should.equal("app" + path.sep + "controller"+path.sep+"Controller_Base.js");
+                    resultFiles[1].should.equal("app" + path.sep + "controller"+path.sep+"MyUnderscoreController.js");
                 });
             });
         });
@@ -109,6 +129,14 @@ describe('gulp-extify', function(){
                     resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Root.js").should.be.below(resultFiles.indexOf("app"+path.sep+"Application.js"));
                 });
             });
+
+            it("should be possible to mixin files with _", function () {
+                sort([fixture("app/base/FileWithUnderscoreMixin.js"), fixture("app/mixin/_MyMixin.js")], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+                    resultFiles[0].should.equal("app" + path.sep + "mixin"+path.sep+"_MyMixin.js");
+                    resultFiles[1].should.equal("app" + path.sep + "base"+path.sep+"FileWithUnderscoreMixin.js");
+                });
+            });
         });
 
         describe("model", function () {
@@ -123,6 +151,14 @@ describe('gulp-extify', function(){
                 ], function(resultFiles) {
                     resultFiles.length.should.equal(5);
                     resultFiles.indexOf("app"+path.sep+"model"+path.sep+"MyModel.js").should.be.below(resultFiles.indexOf("app"+path.sep+"store"+path.sep+"MyStore.js"));
+                });
+            });
+
+            it("should be possible to mixin files with _", function () {
+                sort([fixture("app/store/StoreWithUnderscoreModel.js"), fixture("app/model/_MyModel.js")], function(resultFiles) {
+                    resultFiles.length.should.equal(2);
+                    resultFiles[0].should.equal("app" + path.sep + "model"+path.sep+"_MyModel.js");
+                    resultFiles[1].should.equal("app" + path.sep + "store"+path.sep+"StoreWithUnderscoreModel.js");
                 });
             });
         });
