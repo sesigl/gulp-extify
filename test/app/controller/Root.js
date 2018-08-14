@@ -30,5 +30,13 @@ Ext
         }
 
         return false;
+    },
+
+    ensureProtocol: function(url) {
+        var result = Ext.String.trim(url);
+        if (result.indexOf('://') == -1) {
+            result = 'http://' + result;
+        }
+        return result;
     }
 });
