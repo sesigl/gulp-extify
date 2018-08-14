@@ -158,7 +158,8 @@ module.exports = function extify () {
     });
 
     function removeNotRequiredBracesFrom(str) {
-        return str.replace(/('.*?[^\\]'|".*?[^\\]"|\/.*?[^\\]\/)/gm, '')
+        var result = str.replace(/(''|""|'.*?[^\\']'|".*?[^\\]"|\/.*?[^\\]\/)/gm, '');
+        return result;
     }
 
     function countChars(str, char) {
