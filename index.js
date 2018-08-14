@@ -4,6 +4,7 @@ var es = require('event-stream');
 var TopoSort = require('topo-sort');
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
+var strip = require('strip-comments');
 //var fs = require('fs');
 
 var PLUGIN_NAME = 'gulp-extify';
