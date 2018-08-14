@@ -200,7 +200,7 @@ module.exports = function extify () {
 
     //noinspection Eslint
     function removeComments(content) {
-        return content.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm, '');
+        return content.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])?\/\/(?:.*)$)/gm, '');
     }
 
     function regexIndexOf (str, regex, startpos) {
