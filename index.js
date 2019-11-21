@@ -41,7 +41,12 @@ module.exports = function extify () {
             return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" is empty. You have to read it with gulp.src(..)'));
         }
 
-        var fileContent = removeComments(file.contents.toString());
+        var fileContent = '';
+        try {
+            fileContent = removeComments(file.contents.toString());
+        } catch(e) {
+            return this.emit('error', new PluginError(PLUGIN_NAME, 'There is error in js files found during removal of comments'));
+        }
 
         if(debug.enabled && debug.showContent) {
             console.log("Content with no comments: " + fileContent + '\n' );
